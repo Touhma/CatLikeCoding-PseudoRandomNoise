@@ -5,7 +5,6 @@ namespace _Utils.Structs.ShapesStructs
 {
     public struct PlaneShape : IShape
     {
-        
         public Point4 GetPoint4 (int i, float resolution, float invResolution) {
             float4x2 uv = Shapes.IndexTo4UV(i, resolution, invResolution);
             return new Point4 {
