@@ -33,7 +33,7 @@ namespace Jobs
             float4 sum = 0f;
 
             for (int o = 0; o < settings.octaves; o++) {
-                sum += amplitude * default(N).GetNoise4(frequency * position, hash + o);
+                sum += amplitude * default(N).GetNoise4(frequency * position, hash + o, frequency);
                 frequency *= settings.lacunarity;
                 amplitude *= settings.persistence;
                 amplitudeSum += amplitude;

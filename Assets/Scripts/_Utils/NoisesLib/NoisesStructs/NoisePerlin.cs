@@ -4,7 +4,7 @@ using static Unity.Mathematics.math;
 
 namespace _Utils.NoisesLib.NoisesStructs
 {
-    public struct PerlinNoise: IGradient {
+    public struct NoisePerlin: IGradient {
 
         public float4 Evaluate (SmallXXHash4 hash, float4 x) =>
             (1f + hash.Floats01A) * select(-x, x, ((uint4)hash & 1 << 8) == 0);

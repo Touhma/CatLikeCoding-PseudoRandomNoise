@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace _Utils.Structs.NoiseStruct
 {
-    public struct GradientNoise: IGradient
+    public struct NoiseGradient: IGradient
     {
         public float4 Evaluate (SmallXXHash4 hash, float4 x) => hash.Floats01A * 2f - 1f;
 

@@ -5,11 +5,13 @@ using static Unity.Mathematics.math;
 
 namespace _Utils.NoisesLib.NoisesStructs
 {
-    public struct Lattice3D<G> : INoise where G : struct, IGradient
+    public struct Lattice3D<L, G> : INoise where L : struct, ILattice where G : struct, IGradient 
     {
-        public float4 GetNoise4(float4x3 positions, SmallXXHash4 hash)
+        public float4 GetNoise4(float4x3 positions, SmallXXHash4 hash, int frequency)
         {
-            LatticeSpan4 x = Noises.GetLatticeSpan4(positions.c0), y = Noises.GetLatticeSpan4(positions.c1), z = Noises.GetLatticeSpan4(positions.c2);
+            L l = default;
+            
+            LatticeSpan4 x = l.GetLatticeSpan4(positions.c0, frequency), y = l.GetLatticeSpan4(positions.c1, frequency), z = l.GetLatticeSpan4(positions.c2, frequency);
 
             SmallXXHash4
                 h0 = hash.Eat(x.p0),
