@@ -13,11 +13,11 @@ namespace _Utils.NoisesLib.NoisesStructs
 
             SmallXXHash4 h0 = hash.Eat(x.p0), h1 = hash.Eat(x.p1);
             G g = default;
-            return lerp(
+            return g.EvaluateAfterInterpolation(lerp(
                 lerp(g.Evaluate(h0.Eat(z.p0), x.g0, z.g0), g.Evaluate(h0.Eat(z.p1), x.g0, z.g1), z.t),
                 lerp(g.Evaluate(h1.Eat(z.p0), x.g1, z.g0), g.Evaluate(h1.Eat(z.p1), x.g1, z.g1), z.t),
                 x.t
-            );
+            ));
         }
     }
 }

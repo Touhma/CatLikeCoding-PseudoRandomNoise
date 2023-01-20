@@ -1,6 +1,7 @@
 ﻿using _Utils;
 using _Utils.Extensions;
 using _Utils.Interfaces;
+using _Utils.NoisesLib.NoisesStructs;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -20,23 +21,33 @@ namespace Jobs
         [WriteOnly]
         public NativeArray<float4> noise;
 
-        public SmallXXHash4 hash;
+        public NoiseSettings settings;
 
         public float3x4 domainTRS;
 
         public void Execute (int i) {
-            noise[i] = default(N).GetNoise4(
-                domainTRS.TransformVectors(transpose(positions[i])), hash
-            );
+            float4x3 position = domainTRS.TransformVectors(transpose(positions[i]));
+            SmallXXHash4 hash = SmallXXHash4.Seed(settings.seed);
+            int frequency = settings.frequency;
+            float amplitude = 1f, amplitudeSum = 0f;
+            float4 sum = 0f;
+
+            for (int o = 0; o < settings.octaves; o++) {
+                sum += amplitude * default(N).GetNoise4(frequency * position, hash + o);
+                frequency *= settings.lacunarity;
+                amplitude *= settings.persistence;
+                amplitudeSum += amplitude;
+            }
+            noise[i] = sum / amplitudeSum;
         }
         
         public static JobHandle ScheduleParallel (
             NativeArray<float3x4> positions, NativeArray<float4> noise,
-            int seed, SpaceTRS domainTRS, int resolution, JobHandle dependency
+            NoiseSettings settings, SpaceTRS domainTRS, int resolution, JobHandle dependency
         ) => new NoiseJob<N> {
             positions = positions,
             noise = noise,
-            hash = SmallXXHash.Seed(seed),
+            settings = settings,
             domainTRS = domainTRS.Matrix,
         }.ScheduleParallel(positions.Length, resolution, dependency);
         

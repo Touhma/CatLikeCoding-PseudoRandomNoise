@@ -30,7 +30,7 @@ public class NoiseVisualization : Visualization
 	[SerializeField] NoiseType type;
 	
 	[SerializeField]
-	int seed;
+	NoiseSettings noiseSettings = NoiseSettings.Default;
 
 	[SerializeField]
 	SpaceTRS domain = new() {
@@ -60,7 +60,7 @@ public class NoiseVisualization : Visualization
 		NativeArray<float3x4> positions, int resolution, JobHandle handle
 	) {
 		noiseJobs[(int)type, dimensions - 1](
-			positions, noise, seed, domain, resolution, handle
+			positions, noise, noiseSettings, domain, resolution, handle
 		).Complete();
 		noiseBuffer.SetData(noise.Reinterpret<float>(4 * 4));
 	}

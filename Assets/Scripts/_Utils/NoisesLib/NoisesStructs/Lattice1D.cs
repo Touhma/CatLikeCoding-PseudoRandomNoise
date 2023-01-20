@@ -11,7 +11,7 @@ namespace _Utils.NoisesLib.NoisesStructs
             LatticeSpan4 x = Noises.GetLatticeSpan4(positions.c0);
 
             G g = default;
-            return lerp(g.Evaluate(hash.Eat(x.p0), x.g0), g.Evaluate(hash.Eat(x.p1), x.g1), x.t );
+            return g.EvaluateAfterInterpolation(lerp(g.Evaluate(hash.Eat(x.p0), x.g0), g.Evaluate(hash.Eat(x.p1), x.g1), x.t ));
         }
     }
 }

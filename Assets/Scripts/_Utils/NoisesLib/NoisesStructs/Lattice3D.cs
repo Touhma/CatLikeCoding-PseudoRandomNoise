@@ -21,7 +21,7 @@ namespace _Utils.NoisesLib.NoisesStructs
 
             G g = default;
 
-            return lerp(
+            return g.EvaluateAfterInterpolation(lerp(
                 lerp(
                     lerp(g.Evaluate(h00.Eat(z.p0), x.g0, y.g0, z.g0), g.Evaluate(h00.Eat(z.p1), x.g0, y.g0, z.g1), z.t),
                     lerp(g.Evaluate(h01.Eat(z.p0), x.g0, y.g1, z.g0), g.Evaluate(h01.Eat(z.p1), x.g0, y.g1, z.g1), z.t),
@@ -33,7 +33,7 @@ namespace _Utils.NoisesLib.NoisesStructs
                     y.t
                 ),
                 x.t
-            );
+            ));
         }
     }
 }

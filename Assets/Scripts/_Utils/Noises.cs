@@ -1,4 +1,5 @@
-﻿using _Utils.Structs.NoisesStructs;
+﻿using _Utils.NoisesLib.NoisesStructs;
+using _Utils.Structs.NoisesStructs;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -7,7 +8,7 @@ using static Unity.Mathematics.math;
 
 namespace _Utils
 {
-    public static partial class Noises {
+    public static class Noises {
         public static LatticeSpan4 GetLatticeSpan4 (float4 coordinates) {
             float4 points = floor(coordinates);
             LatticeSpan4 span;
@@ -23,7 +24,7 @@ namespace _Utils
         
         public delegate JobHandle ScheduleDelegate (
             NativeArray<float3x4> positions, NativeArray<float4> noise,
-            int seed, SpaceTRS domainTRS, int resolution, JobHandle dependency
+            NoiseSettings settings, SpaceTRS domainTRS, int resolution, JobHandle dependency
         );
     }
 }

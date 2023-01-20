@@ -25,5 +25,7 @@ namespace _Utils.NoisesLib.NoisesStructs
             gy += select(-offset, offset, gy < 0f);
             return (gx * x + gy * y + gz * z) * (1f / 0.56290f);;
         }
+
+        public float4 EvaluateAfterInterpolation (float4 value) => value;
     }
 }
