@@ -159,6 +159,7 @@ MonoBehaviour:
   instanceScale: 2
   resolution: 64
   displacement: 0.1
+  type: 0
   seed: 0
   domain:
     translation:
@@ -173,7 +174,7 @@ MonoBehaviour:
       x: 8
       y: 8
       z: 8
-  dimensions: 3
+  dimensions: 1
 --- !u!4 &194550285
 Transform:
   m_ObjectHideFlags: 0

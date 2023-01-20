@@ -9,19 +9,31 @@ using UnityEngine;
 
 public class NoiseVisualization : Visualization
 {
-	static Noises.ScheduleDelegate[] noiseJobs = {
-		NoiseJob<Lattice1D<GradientValue>>.ScheduleParallel,
-		NoiseJob<Lattice2D<GradientValue>>.ScheduleParallel,
-		NoiseJob<Lattice3D<GradientValue>>.ScheduleParallel
+	static Noises.ScheduleDelegate[,] noiseJobs =
+	{
+		{
+			NoiseJob<Lattice1D<PerlinNoise>>.ScheduleParallel,
+			NoiseJob<Lattice2D<PerlinNoise>>.ScheduleParallel,
+			NoiseJob<Lattice3D<PerlinNoise>>.ScheduleParallel
+		},
+		{
+			NoiseJob<Lattice1D<GradientNoise>>.ScheduleParallel,
+			NoiseJob<Lattice2D<GradientNoise>>.ScheduleParallel,
+			NoiseJob<Lattice3D<GradientNoise>>.ScheduleParallel
+		}
 	};
 	
 	private static int noiseId  = Shader.PropertyToID("_Noise");
 
+	private enum NoiseType { Perlin, Value }
+
+	[SerializeField] NoiseType type;
+	
 	[SerializeField]
 	int seed;
 
 	[SerializeField]
-	SpaceTRS domain = new SpaceTRS {
+	SpaceTRS domain = new() {
 		scale = 8f
 	};
 	
@@ -47,7 +59,7 @@ public class NoiseVisualization : Visualization
 	protected override void UpdateVisualization (
 		NativeArray<float3x4> positions, int resolution, JobHandle handle
 	) {
-		noiseJobs[dimensions - 1](
+		noiseJobs[(int)type, dimensions - 1](
 			positions, noise, seed, domain, resolution, handle
 		).Complete();
 		noiseBuffer.SetData(noise.Reinterpret<float>(4 * 4));
