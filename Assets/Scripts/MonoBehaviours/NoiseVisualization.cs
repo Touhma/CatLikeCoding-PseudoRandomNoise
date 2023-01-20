@@ -1,5 +1,6 @@
 ﻿using _Utils;
 using _Utils.NoisesLib.NoisesStructs;
+using _Utils.Structs.NoiseStruct;
 using Jobs;
 using Unity.Collections;
 using Unity.Jobs;
@@ -9,9 +10,9 @@ using UnityEngine;
 public class NoiseVisualization : Visualization
 {
 	static Noises.ScheduleDelegate[] noiseJobs = {
-		NoiseJob<Lattice1D>.ScheduleParallel,
-		NoiseJob<Lattice2D>.ScheduleParallel,
-		NoiseJob<Lattice3D>.ScheduleParallel
+		NoiseJob<Lattice1D<GradientValue>>.ScheduleParallel,
+		NoiseJob<Lattice2D<GradientValue>>.ScheduleParallel,
+		NoiseJob<Lattice3D<GradientValue>>.ScheduleParallel
 	};
 	
 	private static int noiseId  = Shader.PropertyToID("_Noise");
