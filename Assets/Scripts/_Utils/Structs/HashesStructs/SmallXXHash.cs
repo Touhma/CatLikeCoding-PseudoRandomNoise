@@ -10,23 +10,25 @@
 
         readonly uint accumulator;
 
-        private SmallXXHash(uint accumulator)
-        {
+        public SmallXXHash (uint accumulator) {
             this.accumulator = accumulator;
         }
 
-        public static implicit operator SmallXXHash(uint accumulator) => new SmallXXHash(accumulator);
+        public static implicit operator SmallXXHash (uint accumulator) =>
+            new SmallXXHash(accumulator);
 
-        public static SmallXXHash Seed(int seed) => (uint)seed + primeE;
+        public static SmallXXHash Seed (int seed) => (uint)seed + primeE;
 
-        private static uint RotateLeft(uint data, int steps) => (data << steps) | (data >> 32 - steps);
+        static uint RotateLeft (uint data, int steps) =>
+            (data << steps) | (data >> 32 - steps);
 
-        public SmallXXHash Eat(int data) => RotateLeft(accumulator + (uint)data * primeC, 17) * primeD;
+        public SmallXXHash Eat (int data) =>
+            RotateLeft(accumulator + (uint)data * primeC, 17) * primeD;
 
-        public SmallXXHash Eat(byte data) => RotateLeft(accumulator + data * primeE, 11) * primeA;
+        public SmallXXHash Eat (byte data) =>
+            RotateLeft(accumulator + data * primeE, 11) * primeA;
 
-        public static implicit operator uint(SmallXXHash hash)
-        {
+        public static implicit operator uint (SmallXXHash hash) {
             uint avalanche = hash.accumulator;
             avalanche ^= avalanche >> 15;
             avalanche *= primeB;
@@ -36,7 +38,7 @@
             return avalanche;
         }
 
-        public static implicit operator SmallXXHash4(SmallXXHash hash) =>
+        public static implicit operator SmallXXHash4 (SmallXXHash hash) =>
             new SmallXXHash4(hash.accumulator);
     }
 }

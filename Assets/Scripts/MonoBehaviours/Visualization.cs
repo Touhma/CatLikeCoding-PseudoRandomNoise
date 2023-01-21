@@ -5,128 +5,121 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+
 using static Unity.Mathematics.math;
 
-public abstract class Visualization : MonoBehaviour
-{
-    public enum Shape
-    {
-        Plane,
-        UVSphere,
-        OctaSphere,
-        Torus
-    }
+public abstract class Visualization : MonoBehaviour {
 
-    private static Shapes.ScheduleDelegate[] shapeJobs =
-    {
-        ShapeJob<PlaneShape>.ScheduleParallel,
-        ShapeJob<UVSphereShape>.ScheduleParallel,
-        ShapeJob<OctaSphereShape>.ScheduleParallel,
-        ShapeJob<TorusShape>.ScheduleParallel
-    };
+	public enum Shape { Plane, Sphere, Torus }
 
-    private static int
-        positionsId = Shader.PropertyToID("_Positions"),
-        normalsId = Shader.PropertyToID("_Normals"),
-        configId = Shader.PropertyToID("_Config");
+	static Shapes.ScheduleDelegate[] shapeJobs = {
+		ShapeJob<ShapePlane>.ScheduleParallel,
+		ShapeJob<ShapeSphere>.ScheduleParallel,
+		ShapeJob<ShapeTorus>.ScheduleParallel
+	};
 
-    [SerializeField] private Mesh instanceMesh;
+	static int
+		positionsId = Shader.PropertyToID("_Positions"),
+		normalsId = Shader.PropertyToID("_Normals"),
+		configId = Shader.PropertyToID("_Config");
 
-    [SerializeField] private Material material;
+	[SerializeField]
+	Mesh instanceMesh;
 
-    [SerializeField] private Shape shape;
+	[SerializeField]
+	Material material;
 
-    [SerializeField, Range(0.1f, 10f)] private float instanceScale = 2f;
+	[SerializeField]
+	Shape shape;
 
-    [SerializeField, Range(1, 512)] private int resolution = 16;
+	[SerializeField, Range(0.1f, 10f)]
+	float instanceScale = 2f;
 
-    [SerializeField, Range(-0.5f, 0.5f)] private float displacement = 0.1f;
+	[SerializeField, Range(1, 512)]
+	int resolution = 16;
 
-    private NativeArray<float3x4> positions, normals;
+	[SerializeField, Range(-0.5f, 0.5f)]
+	float displacement = 0.1f;
 
-    private ComputeBuffer positionsBuffer, normalsBuffer;
+	NativeArray<float3x4> positions, normals;
 
-    private MaterialPropertyBlock propertyBlock;
+	ComputeBuffer positionsBuffer, normalsBuffer;
 
-    private bool isDirty;
+	MaterialPropertyBlock propertyBlock;
 
-    private Bounds bounds;
+	bool isDirty;
 
-    protected  abstract void EnableVisualization(int dataLength, MaterialPropertyBlock propertyBlock);
+	Bounds bounds;
 
-    protected abstract void DisableVisualization();
+	void OnEnable () {
+		isDirty = true;
 
-    protected  abstract void UpdateVisualization(NativeArray<float3x4> positions, int resolution, JobHandle handle);
+		int length = resolution * resolution;
+		length = length / 4 + (length & 1);
+		positions = new NativeArray<float3x4>(length, Allocator.Persistent);
+		normals = new NativeArray<float3x4>(length, Allocator.Persistent);
+		positionsBuffer = new ComputeBuffer(length * 4, 3 * 4);
+		normalsBuffer = new ComputeBuffer(length * 4, 3 * 4);
 
-    private void OnEnable()
-    {
-        isDirty = true;
+		propertyBlock ??= new MaterialPropertyBlock();
+		EnableVisualization(length, propertyBlock);
+		propertyBlock.SetBuffer(positionsId, positionsBuffer);
+		propertyBlock.SetBuffer(normalsId, normalsBuffer);
+		propertyBlock.SetVector(configId, new Vector4(
+			resolution, instanceScale / resolution, displacement
+		));
+	}
 
-        int length = resolution * resolution;
-        length = length / 4 + (length & 1);
+	void OnDisable () {
+		positions.Dispose();
+		normals.Dispose();
+		positionsBuffer.Release();
+		normalsBuffer.Release();
+		positionsBuffer = null;
+		normalsBuffer = null;
+		DisableVisualization();
+	}
 
-        positions = new NativeArray<float3x4>(length, Allocator.Persistent);
-        normals = new NativeArray<float3x4>(length, Allocator.Persistent);
-        positionsBuffer = new ComputeBuffer(length * 4, 3 * 4);
-        normalsBuffer = new ComputeBuffer(length * 4, 3 * 4);
+	void OnValidate () {
+		if (positionsBuffer != null && enabled) {
+			OnDisable();
+			OnEnable();
+		}
+	}
 
-        propertyBlock ??= new MaterialPropertyBlock();
+	void Update () {
+		if (isDirty || transform.hasChanged) {
+			isDirty = false;
+			transform.hasChanged = false;
 
-        EnableVisualization(length, propertyBlock);
+			UpdateVisualization(
+				positions, resolution,
+				shapeJobs[(int)shape](
+					positions, normals, resolution, transform.localToWorldMatrix, default
+				)
+			);
 
-        propertyBlock.SetBuffer(positionsId, positionsBuffer);
-        propertyBlock.SetBuffer(normalsId, normalsBuffer);
-        propertyBlock.SetVector(configId, new Vector4(
-            resolution, instanceScale / resolution, displacement
-        ));
-    }
+			positionsBuffer.SetData(positions.Reinterpret<float3>(3 * 4 * 4));
+			normalsBuffer.SetData(normals.Reinterpret<float3>(3 * 4 * 4));
 
-    private void OnDisable()
-    {
-        positions.Dispose();
-        normals.Dispose();
-        positionsBuffer.Release();
-        normalsBuffer.Release();
-        positionsBuffer = null;
-        normalsBuffer = null;
+			bounds = new Bounds(
+				transform.position,
+				float3(2f * cmax(abs(transform.lossyScale)) + displacement)
+			);
+		}
 
-        DisableVisualization();
-    }
+		Graphics.DrawMeshInstancedProcedural(
+			instanceMesh, 0, material, bounds, resolution * resolution, propertyBlock
+		);
+	}
 
-    private void OnValidate()
-    {
-        if (positionsBuffer != null && enabled)
-        {
-            OnDisable();
-            OnEnable();
-        }
-    }
+	protected abstract void EnableVisualization (
+		int dataLength, MaterialPropertyBlock propertyBlock
+	);
 
-    private void Update()
-    {
-        if (isDirty || transform.hasChanged)
-        {
-            isDirty = false;
-            transform.hasChanged = false;
+	protected abstract void DisableVisualization ();
 
-            UpdateVisualization(
-                positions, resolution,
-                shapeJobs[(int)shape](
-                    positions, normals, resolution, transform.localToWorldMatrix, default
-                )
-            );
-
-            positionsBuffer.SetData(positions.Reinterpret<float3>(3 * 4 * 4));
-            normalsBuffer.SetData(normals.Reinterpret<float3>(3 * 4 * 4));
-
-            bounds = new Bounds(
-                transform.position,
-                float3(2f * cmax(abs(transform.lossyScale)) + displacement)
-            );
-        }
-
-        Graphics.DrawMeshInstancedProcedural(
-            instanceMesh, 0, material, bounds, resolution * resolution, propertyBlock
-        );
-    }
+	protected abstract void UpdateVisualization (
+		NativeArray<float3x4> positions, int resolution, JobHandle handle
+	);
 }

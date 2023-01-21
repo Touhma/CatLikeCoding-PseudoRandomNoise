@@ -13,8 +13,8 @@ namespace Jobs
 {
 
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
-    public struct NoiseJob<N> : IJobFor where N : struct, INoise
-    {
+    public struct NoiseJob<N> : IJobFor where N : struct, INoise {
+
         [ReadOnly]
         public NativeArray<float3x4> positions;
 
@@ -27,20 +27,20 @@ namespace Jobs
 
         public void Execute (int i) {
             float4x3 position = domainTRS.TransformVectors(transpose(positions[i]));
-            SmallXXHash4 hash = SmallXXHash4.Seed(settings.seed);
+            var hash = SmallXXHash4.Seed(settings.seed);
             int frequency = settings.frequency;
             float amplitude = 1f, amplitudeSum = 0f;
             float4 sum = 0f;
 
             for (int o = 0; o < settings.octaves; o++) {
-                sum += amplitude * default(N).GetNoise4(frequency * position, hash + o, frequency);
+                sum += amplitude * default(N).GetNoise4(position, hash + o, frequency);
+                amplitudeSum += amplitude;
                 frequency *= settings.lacunarity;
                 amplitude *= settings.persistence;
-                amplitudeSum += amplitude;
             }
             noise[i] = sum / amplitudeSum;
         }
-        
+
         public static JobHandle ScheduleParallel (
             NativeArray<float3x4> positions, NativeArray<float4> noise,
             NoiseSettings settings, SpaceTRS domainTRS, int resolution, JobHandle dependency
@@ -50,7 +50,5 @@ namespace Jobs
             settings = settings,
             domainTRS = domainTRS.Matrix,
         }.ScheduleParallel(positions.Length, resolution, dependency);
-        
-        
     }
 }

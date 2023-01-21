@@ -20,7 +20,7 @@ namespace _Utils.NoisesLib.NoisesStructs
         [Range(0f, 1f)]
         public float persistence;
 
-        public static NoiseSettings Default => new NoiseSettings {
+        public static NoiseSettings Default => new (){
             frequency = 4,
             octaves = 1,
             lacunarity = 2,
