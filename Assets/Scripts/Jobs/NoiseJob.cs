@@ -27,7 +27,7 @@ namespace Jobs
 
         public void Execute (int i) {
             float4x3 position = domainTRS.TransformVectors(transpose(positions[i]));
-            var hash = SmallXXHash4.Seed(settings.seed);
+            SmallXXHash4 hash = SmallXXHash4.Seed(settings.seed);
             int frequency = settings.frequency;
             float amplitude = 1f, amplitudeSum = 0f;
             float4 sum = 0f;

@@ -9,8 +9,7 @@ namespace _Utils.NoisesLib.NoisesStructs
 
         public float4 GetDistance (float4 x, float4 y) => max(abs(x), abs(y));
 
-        public float4 GetDistance (float4 x, float4 y, float4 z) =>
-            max(max(abs(x), abs(y)), abs(z));
+        public float4 GetDistance (float4 x, float4 y, float4 z) => max(max(abs(x), abs(y)), abs(z));
 
         public float4x2 Finalize1D (float4x2 minima) => minima;
 

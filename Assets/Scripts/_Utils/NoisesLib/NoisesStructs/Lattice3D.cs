@@ -9,7 +9,7 @@ namespace _Utils.NoisesLib.NoisesStructs
         where L : struct, ILattice where G : struct, IGradient {
 
         public float4 GetNoise4 (float4x3 positions, SmallXXHash4 hash, int frequency) {
-            var l = default(L);
+            L l = default;
             LatticeSpan4
                 x = l.GetLatticeSpan4(positions.c0, frequency),
                 y = l.GetLatticeSpan4(positions.c1, frequency),
@@ -20,7 +20,7 @@ namespace _Utils.NoisesLib.NoisesStructs
                 h00 = h0.Eat(y.p0), h01 = h0.Eat(y.p1),
                 h10 = h1.Eat(y.p0), h11 = h1.Eat(y.p1);
 
-            var g = default(G);
+            G g = default;
             return g.EvaluateAfterInterpolation(lerp(
                 lerp(
                     lerp(

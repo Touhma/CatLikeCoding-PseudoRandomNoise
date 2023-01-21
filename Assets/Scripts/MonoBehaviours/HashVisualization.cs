@@ -9,17 +9,13 @@ public class HashVisualization : Visualization
 {
 	private static int hashesId = Shader.PropertyToID("_Hashes");
 
-	[SerializeField]
-	int seed;
+	[SerializeField] private int seed;
 
-	[SerializeField]
-	SpaceTRS domain = new SpaceTRS {
-		scale = 8f
-	};
+	[SerializeField] private SpaceTRS domain = new() { scale = 8f };
 
-	NativeArray<uint4> hashes;
+	private NativeArray<uint4> hashes;
 
-	ComputeBuffer hashesBuffer;
+	private ComputeBuffer hashesBuffer;
 
 	protected override void EnableVisualization (int dataLength, MaterialPropertyBlock propertyBlock) {
 		hashes = new NativeArray<uint4>(dataLength, Allocator.Persistent);

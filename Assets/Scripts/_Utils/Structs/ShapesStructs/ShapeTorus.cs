@@ -9,8 +9,8 @@ namespace _Utils.Structs.ShapesStructs
         public Point4 GetPoint4 (int i, float resolution, float invResolution) {
             float4x2 uv = IndexTo4UV(i, resolution, invResolution);
 
-            float r1 = 0.375f;
-            float r2 = 0.125f;
+            const float r1 = 0.375f;
+            const float r2 = 0.125f;
             float4 s = r1 + r2 * cos(2f * PI * uv.c1);
 
             Point4 p;

@@ -22,6 +22,7 @@ namespace _Utils.Structs.ShapesStructs
                 p.positions.c1 * p.positions.c1 +
                 p.positions.c2 * p.positions.c2
             );
+            
             p.positions.c0 *= scale;
             p.positions.c1 *= scale;
             p.positions.c2 *= scale;

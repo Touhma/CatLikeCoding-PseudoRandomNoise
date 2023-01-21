@@ -5,18 +5,17 @@ using static Unity.Mathematics.math;
 
 namespace _Utils.NoisesLib.NoisesStructs
 {
-    public struct Lattice2D<L, G> : INoise
-        where L : struct, ILattice where G : struct, IGradient {
+    public struct Lattice2D<L, G> : INoise where L : struct, ILattice where G : struct, IGradient {
 
         public float4 GetNoise4 (float4x3 positions, SmallXXHash4 hash, int frequency) {
-            var l = default(L);
+            L l = default;
             LatticeSpan4
                 x = l.GetLatticeSpan4(positions.c0, frequency),
                 z = l.GetLatticeSpan4(positions.c2, frequency);
 
             SmallXXHash4 h0 = hash.Eat(x.p0), h1 = hash.Eat(x.p1);
 
-            var g = default(G);
+            G g = default;
             return g.EvaluateAfterInterpolation(lerp(
                 lerp(
                     g.Evaluate(h0.Eat(z.p0), x.g0, z.g0),

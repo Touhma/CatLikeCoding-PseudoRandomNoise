@@ -1,7 +1,6 @@
 ﻿using _Utils.Interfaces;
 using _Utils.Structs.NoisesStructs;
 using Unity.Mathematics;
-using static Unity.Mathematics.math;
 
 namespace _Utils.NoisesLib.NoisesStructs
 {
@@ -11,8 +10,8 @@ namespace _Utils.NoisesLib.NoisesStructs
         where F : struct, IVoronoiFunction {
 
         public float4 GetNoise4 (float4x3 positions, SmallXXHash4 hash, int frequency) {
-            var l = default(L);
-            var d = default(D);
+            L l = default;
+            D d = default;
             LatticeSpan4
                 x = l.GetLatticeSpan4(positions.c0, frequency),
                 y = l.GetLatticeSpan4(positions.c1, frequency),

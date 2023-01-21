@@ -27,9 +27,7 @@ namespace Jobs
             normals[i] = float3x4(normalize(n.c0), normalize(n.c1), normalize(n.c2), normalize(n.c3));
         }
 
-        public static JobHandle ScheduleParallel(
-            NativeArray<float3x4> positions, NativeArray<float3x4> normals, int resolution, float4x4 trs, JobHandle dependency
-        )
+        public static JobHandle ScheduleParallel(NativeArray<float3x4> positions, NativeArray<float3x4> normals, int resolution, float4x4 trs, JobHandle dependency)
         {
             float4x4 tim = transpose(inverse(trs));
             

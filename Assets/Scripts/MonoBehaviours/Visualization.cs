@@ -12,46 +12,40 @@ public abstract class Visualization : MonoBehaviour {
 
 	public enum Shape { Plane, Sphere, Torus }
 
-	static Shapes.ScheduleDelegate[] shapeJobs = {
+	private static Shapes.ScheduleDelegate[] shapeJobs = {
 		ShapeJob<ShapePlane>.ScheduleParallel,
 		ShapeJob<ShapeSphere>.ScheduleParallel,
 		ShapeJob<ShapeTorus>.ScheduleParallel
 	};
 
-	static int
+	private static int
 		positionsId = Shader.PropertyToID("_Positions"),
 		normalsId = Shader.PropertyToID("_Normals"),
 		configId = Shader.PropertyToID("_Config");
 
-	[SerializeField]
-	Mesh instanceMesh;
+	[SerializeField] private Mesh instanceMesh;
 
-	[SerializeField]
-	Material material;
+	[SerializeField] private Material material;
 
-	[SerializeField]
-	Shape shape;
+	[SerializeField] private Shape shape;
 
-	[SerializeField, Range(0.1f, 10f)]
-	float instanceScale = 2f;
+	[SerializeField, Range(0.1f, 10f)] private float instanceScale = 2f;
 
-	[SerializeField, Range(1, 512)]
-	int resolution = 16;
+	[SerializeField, Range(1, 512)] private int resolution = 16;
 
-	[SerializeField, Range(-0.5f, 0.5f)]
-	float displacement = 0.1f;
+	[SerializeField, Range(-0.5f, 0.5f)] private float displacement = 0.1f;
 
-	NativeArray<float3x4> positions, normals;
+	private NativeArray<float3x4> positions, normals;
 
-	ComputeBuffer positionsBuffer, normalsBuffer;
+	private ComputeBuffer positionsBuffer, normalsBuffer;
 
-	MaterialPropertyBlock propertyBlock;
+	private MaterialPropertyBlock propertyBlock;
 
-	bool isDirty;
+	private bool isDirty;
 
-	Bounds bounds;
+	private Bounds bounds;
 
-	void OnEnable () {
+	private void OnEnable () {
 		isDirty = true;
 
 		int length = resolution * resolution;
@@ -70,7 +64,7 @@ public abstract class Visualization : MonoBehaviour {
 		));
 	}
 
-	void OnDisable () {
+	private void OnDisable () {
 		positions.Dispose();
 		normals.Dispose();
 		positionsBuffer.Release();
@@ -80,14 +74,14 @@ public abstract class Visualization : MonoBehaviour {
 		DisableVisualization();
 	}
 
-	void OnValidate () {
-		if (positionsBuffer != null && enabled) {
-			OnDisable();
-			OnEnable();
-		}
+	private void OnValidate ()
+	{
+		if (positionsBuffer == null || !enabled) return;
+		OnDisable();
+		OnEnable();
 	}
 
-	void Update () {
+	private void Update () {
 		if (isDirty || transform.hasChanged) {
 			isDirty = false;
 			transform.hasChanged = false;

@@ -26,7 +26,6 @@ namespace _Utils.NoisesLib.NoisesStructs
             return span;
         }
 
-        public int4 ValidateSingleStep (int4 points, int frequency) =>
-            select(select(points, 0, points == frequency), frequency - 1, points == -1);
+        public int4 ValidateSingleStep (int4 points, int frequency) => select(select(points, 0, points == frequency), frequency - 1, points == -1);
     }
 }
