@@ -1,4 +1,5 @@
-﻿using _Utils.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using _Utils.Interfaces;
 using _Utils.Structs.NoisesStructs;
 using Unity.Mathematics;
 
@@ -9,6 +10,7 @@ namespace _Utils.NoisesLib.NoisesStructs
         where D : struct, IVoronoiDistance
         where F : struct, IVoronoiFunction {
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float4 GetNoise4 (float4x3 positions, SmallXXHash4 hash, int frequency) {
             L l = default;
             D d = default;

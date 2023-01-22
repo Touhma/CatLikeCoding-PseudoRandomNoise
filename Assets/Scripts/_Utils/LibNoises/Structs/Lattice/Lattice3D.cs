@@ -1,4 +1,5 @@
-﻿using _Utils.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using _Utils.Interfaces;
 using _Utils.Structs.NoisesStructs;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
@@ -8,6 +9,7 @@ namespace _Utils.NoisesLib.NoisesStructs
     public struct Lattice3D<L, G> : INoise
         where L : struct, ILattice where G : struct, IGradient {
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float4 GetNoise4 (float4x3 positions, SmallXXHash4 hash, int frequency) {
             L l = default;
             LatticeSpan4
@@ -21,7 +23,7 @@ namespace _Utils.NoisesLib.NoisesStructs
                 h10 = h1.Eat(y.p0), h11 = h1.Eat(y.p1);
 
             G g = default;
-            return g.EvaluateAfterInterpolation(lerp(
+            return g.EvaluateCombined(lerp(
                 lerp(
                     lerp(
                         g.Evaluate(h00.Eat(z.p0), x.g0, y.g0, z.g0),

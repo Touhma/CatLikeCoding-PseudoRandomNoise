@@ -1,4 +1,5 @@
 ﻿using _Utils;
+using _Utils.LibNoises.Structs.Gradient;
 using _Utils.NoisesLib.NoisesStructs;
 using _Utils.Structs.NoiseStruct;
 using Jobs;
@@ -42,6 +43,38 @@ public class NoiseVisualization : Visualization
             NoiseJob<Lattice2D<LatticeTiling, NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
             NoiseJob<Lattice3D<LatticeNormal, NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
             NoiseJob<Lattice3D<LatticeTiling, NoiseTurbulence<NoiseGradient>>>.ScheduleParallel
+        },
+        {
+            NoiseJob<Simplex1D<SimplexGradient>>.ScheduleParallel,
+            NoiseJob<Simplex1D<SimplexGradient>>.ScheduleParallel,
+            NoiseJob<Simplex2D<SimplexGradient>>.ScheduleParallel,
+            NoiseJob<Simplex2D<SimplexGradient>>.ScheduleParallel,
+            NoiseJob<Simplex3D<SimplexGradient>>.ScheduleParallel,
+            NoiseJob<Simplex3D<SimplexGradient>>.ScheduleParallel
+        },
+        {
+            NoiseJob<Simplex1D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex1D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseTurbulence<SimplexGradient>>>.ScheduleParallel
+        },
+        {
+            NoiseJob<Simplex1D<NoiseGradient>>.ScheduleParallel,
+            NoiseJob<Simplex1D<NoiseGradient>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseGradient>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseGradient>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseGradient>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseGradient>>.ScheduleParallel
+        },
+        {
+            NoiseJob<Simplex1D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex1D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex2D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel,
+            NoiseJob<Simplex3D<NoiseTurbulence<NoiseGradient>>>.ScheduleParallel
         },
         {
             NoiseJob<Voronoi1D<LatticeNormal, Worley, F1>>.ScheduleParallel,
@@ -103,6 +136,10 @@ public class NoiseVisualization : Visualization
         PerlinTurbulence,
         Value,
         ValueTurbulence,
+        Simplex,
+        SimplexTurbulence,
+        SimplexValue,
+        SimplexValueTurbulence,
         VoronoiWorleyF1,
         VoronoiWorleyF2,
         VoronoiWorleyF2MinusF1,

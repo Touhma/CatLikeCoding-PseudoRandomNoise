@@ -10,6 +10,6 @@ namespace _Utils.Interfaces
 
         float4 Evaluate (SmallXXHash4 hash, float4 x, float4 y, float4 z);
         
-        float4 EvaluateAfterInterpolation (float4 value);
+        float4 EvaluateCombined (float4 value);
     }
 }
